@@ -1,0 +1,298 @@
+
+<html lang="en">
+
+<head>
+  <script src="inte.javascript" defer></script>
+   <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<title>Rizal High School - Grade System</title>
+
+</head>
+
+<!-- =================HTML================= -->
+<body class="out">
+
+<!-- the dark maroon curve on the login page (a drawing made of one curved line) -->
+<svg class="wave" viewBox="0 0 400 650" preserveAspectRatio="none">
+  <path d="M0,0 L340,0 C420,140 330,290 300,380 C270,470 240,570 320,650 L0,650 Z" fill="#5b1314"/>
+</svg>
+
+<nav id="menu"></nav>
+
+<header>
+  <input type="text" id="searchBox" class="searchBox" placeholder="Search Student" onkeyup="searchStudent()">
+  <span id="who" class="who"></span>
+</header>
+
+<main>
+  <p id="loginLogo" class="loginLogo"></p>
+  <p class="titlebar"><span id="pageTitle" class="title"></span><span id="schoolYear" class="year"></span></p>
+  <p id="message" class="msg"></p>
+
+  <!-- LOGIN -->
+  <section id="loginPage">
+    <h2>Welcome Back!</h2>
+    <form onsubmit="return false">
+      <label>Username</label>
+      <input type="text" id="username">
+      <label>Password</label>
+      <input type="password" id="password" onkeydown="if (event.key === 'Enter') { login(); }">
+      <input type="button" value="Login" onclick="login()">
+      <br>
+      <a href="#" onclick="forgot(); return false">Forgot password?</a>
+    </form>
+    <small>
+      admin / admin123<br>
+      santos / teach123 (teacher of Computer Programming)<br>
+      students / stud123: cassie, elp, julia, kuki, sabado (11 - GAS) &middot; angel, paolo, sofia, miguel, bea (11 - HUMSS) &middot; carlo, hannah, joshua, trisha, rafael (11 - TVL)
+    </small>
+  </section>
+
+  <!-- ============ STUDENT PORTAL ============ -->
+  <section id="stuHome" class="hidden">
+    <p id="stuWelcome"></p>
+    <article id="stuStats"></article>
+    <h3>1st and 2nd Quarter Grade per Subject</h3>
+    <article id="stuChart1"></article>
+    <h3>Average Percentage Score per Component</h3>
+    <article id="stuChart2"></article>
+    <p id="stuNote"></p>
+  </section>
+
+  <section id="stuGrades" class="hidden">
+    <h3>Student Information</h3>
+    <p id="stuInfo"></p>
+    <h3>Report of Grades</h3>
+    <table id="stuTable" class="report"></table>
+    <input type="button" value="Print Report" onclick="window.print()">
+    <h3>Descriptors, Grading Scale and Remarks</h3>
+    <table id="stuScale" class="scale"></table>
+    <h3>Score Details</h3>
+    <form onsubmit="return false">
+      <p>Subject: <select id="detailSelect" onchange="showDetail()"></select></p>
+    </form>
+    <table id="detailTable"></table>
+  </section>
+
+  <!-- ============ TEACHER PORTAL ============ -->
+  <section id="tchHome" class="hidden">
+    <p id="tchWelcome"></p>
+    <article id="tchStats"></article>
+    <h3>Working Hours Per Day</h3>
+    <article id="tchChart"></article>
+    <h3>My Classes</h3>
+    <table id="tchClasses"></table>
+    <h3>Needs Attention</h3>
+    <article id="tchAttention"></article>
+  </section>
+
+  <section id="tchStudents" class="hidden">
+    <table id="tchStudentTable"></table>
+  </section>
+
+  <!-- ============ SHARED BY TEACHER AND ADMIN ============ -->
+  <section id="sheetPage" class="hidden">
+    <form onsubmit="return false">
+      <p class="filters">
+        <select id="sheetClass" onchange="changeSheetClass()"></select>
+        <select id="sheetTerm" onchange="showSheet()">
+          <option value="q1">1st Quarter</option>
+          <option value="q2">2nd Quarter</option>
+        </select>
+      </p>
+    </form>
+    <article id="sheetStats"></article>
+    <p id="sheetInfo"></p>
+    <article class="enter">
+      <article id="sheetTables"></article>
+      <article id="sheetList"></article>
+    </article>
+  </section>
+
+  <section id="computePage" class="hidden">
+    <form onsubmit="return false">
+      <p>Class: <select id="computeClass" onchange="drawCompute()"></select></p>
+    </form>
+    <p id="computeFormula"></p>
+    <article id="computeSummary"></article>
+    <table id="computeTable"></table>
+    <h3>Descriptors, Grading Scale and Remarks</h3>
+    <table id="scaleTable" class="scale"></table>
+    <h3>Show the Computation</h3>
+    <form onsubmit="return false">
+      <p>Student: <select id="computeStudent" onchange="drawBreakdown()"></select></p>
+    </form>
+    <table id="breakdownTable"></table>
+    <p id="breakdownResult"></p>
+    <input type="button" value="Print" onclick="window.print()">
+  </section>
+
+  <section id="schedulePage" class="hidden">
+    <h3 id="schedTitle">Schedule</h3>
+    <table id="schedTable"></table>
+  </section>
+
+  <!-- ============ ADMIN PORTAL ============ -->
+  <section id="admHome" class="hidden">
+    <p id="admWelcome"></p>
+    <article id="admStats"></article>
+    <h3>Admin Staff</h3>
+    <table id="admStaff"></table>
+    <h3>All Classes</h3>
+    <table id="admClasses"></table>
+    <h3>System Checks</h3>
+    <article id="admChecks"></article>
+  </section>
+
+  <section id="usersPage" class="hidden">
+    <h3>Add User</h3>
+    <form onsubmit="return false">
+      <p>
+        Name:<br>
+        <input type="text" id="uName" placeholder="Lastname, Firstname"><br><br>
+        Username:<br>
+        <input type="text" id="uUser" placeholder="Username"><br><br>
+        Password:<br>
+        <input type="text" id="uPass" placeholder="Password"><br><br>
+        Role:
+        <select id="uRole">
+          <option value="student">student</option>
+          <option value="teacher">teacher</option>
+          <option value="admin">admin</option>
+        </select><br><br>
+        Strand (students only):<br>
+        <input type="text" id="uProgram" placeholder="GAS"><br><br>
+        Grade level (students only):<br>
+        <input type="text" id="uYear" placeholder="11"><br><br>
+        Section (students only):<br>
+        <input type="text" id="uSection" placeholder="11 - GAS"><br><br>
+        Position (admin staff only):<br>
+        <input type="text" id="uPosition" placeholder="Registrar"><br><br>
+        Office hours (admin staff only):<br>
+        <input type="text" id="uHours" placeholder="M-F 08:00 AM - 05:00 PM" size="30"><br><br>
+        <input type="button" value="Add User" onclick="addUser()">
+        <input type="button" value="Save Changes" onclick="saveUser()">
+        <input type="button" value="Clear" onclick="clearUserForm()">
+      </p>
+    </form>
+    <p id="userOutput"></p>
+    <hr>
+    <table id="userTable"></table>
+  </section>
+
+  <section id="classesPage" class="hidden">
+    <h3>Add Class</h3>
+    <form onsubmit="return false">
+      <p>
+        Code:<br>
+        <input type="text" id="cCode" placeholder="PROG"><br><br>
+        Subject:<br>
+        <input type="text" id="cTitle" placeholder="Subject name"><br><br>
+        Units:<br>
+        <input type="number" id="cUnits" placeholder="Units"><br><br>
+        Lab:<br>
+        <input type="number" id="cLab" placeholder="Lab units"><br><br>
+        Schedule:<br>
+        <input type="text" id="cSchedule" placeholder="M (07:00 AM - 10:00 AM) - Lec" size="32"><br><br>
+        Section:<br>
+        <input type="text" id="cSection" placeholder="11 - GAS"><br><br>
+        Teacher:
+        <select id="cTeacher"></select><br><br>
+        <input type="button" value="Add Class" onclick="addClass()">
+        <input type="button" value="Save Changes" onclick="saveClass()">
+        <input type="button" value="Clear" onclick="clearClassForm()">
+      </p>
+    </form>
+    <p id="classOutput"></p>
+    <hr>
+    <table id="classTable"></table>
+  </section>
+
+  <section id="maintPage" class="hidden">
+    <h3>Grading Weights</h3>
+    <form onsubmit="return false">
+      <p>
+        Written Works %: <input type="number" id="wWw" min="0" max="100">
+        Performance Task %: <input type="number" id="wPt" min="0" max="100">
+        Quarterly Assessment %: <input type="number" id="wQa" min="0" max="100">
+        <input type="button" value="Save Weights" onclick="saveWeights()">
+      </p>
+    </form>
+    <h3>School Year</h3>
+    <form onsubmit="return false">
+      <p>
+        <input type="text" id="wYear" placeholder="2026-2027">
+        <input type="button" value="Save School Year" onclick="saveYear()">
+      </p>
+    </form>
+    <h3>Descriptors, Grading Scale and Remarks</h3>
+    <table id="maintScale" class="scale"></table>
+    <p>To change this table, edit the "scale" part of the JSON below, then press Apply JSON.</p>
+    <h3>JSON Database</h3>
+    <textarea id="jsonText"></textarea><br><br>
+    <input type="button" value="Show Current JSON" onclick="showJson()">
+    <input type="button" value="Apply JSON" onclick="applyJson()">
+    <input type="button" value="Reset to Original Data" onclick="resetData()">
+  </section>
+</main>
+<!--json-->
+<script>
+  var settings = {
+    schoolYear: "2026-2027",
+    passing: 75,
+    weights: { ww: 30, pt: 50, qa: 20 },
+    scale: [
+      { descriptor: "Outstanding", min: 90, max: 100, remarks: "Passed" },
+      { descriptor: "Very Satisfactory", min: 85, max: 89, remarks: "Passed" },
+      { descriptor: "Satisfactory", min: 80, max: 84, remarks: "Passed" },
+      { descriptor: "Fairly Satisfactory", min: 75, max: 79, remarks: "Passed" },
+      { descriptor: "Did Not Meet Expectations", min: 0, max: 74, remarks: "Failed" }
+    ]
+  };
+  //Users
+  var users = [
+    { id: 1, username: "admin", password: "admin123", role: "admin", name: "System Admin", position: "System Administrator", hours: "M-F 08:00 AM - 05:00 PM" },
+    { id: 2, username: "santos", password: "teach123", role: "teacher", name: "Santos, Mark Anthony" },
+    { id: 3, username: "cassie", password: "stud123", role: "student", name: "Calapi, Kristina Cassandra", program: "GAS", year: "11", section: "11 - GAS" },
+    { id: 4, username: "elp", password: "stud123", role: "student", name: "Broqueza, Elphie Rose", program: "GAS", year: "11", section: "11 - GAS" },
+    { id: 5, username: "julia", password: "stud123", role: "student", name: "Gocotano, Julia", program: "GAS", year: "11", section: "11 - GAS" },
+    { id: 6, username: "kuki", password: "stud123", role: "student", name: "De Mesa, Johnuel", program: "GAS", year: "11", section: "11 - GAS" },
+    { id: 7, username: "sabado", password: "stud123", role: "student", name: "Sabado, Mark Anthony", program: "GAS", year: "11", section: "11 - GAS" },
+    { id: 8, username: "angel", password: "stud123", role: "student", name: "Dela Cruz, Maria Angelica", program: "HUMSS", year: "11", section: "11 - HUMSS" },
+    { id: 9, username: "paolo", password: "stud123", role: "student", name: "Reyes, John Paolo", program: "HUMSS", year: "11", section: "11 - HUMSS" },
+    { id: 10, username: "sofia", password: "stud123", role: "student", name: "Mendoza, Sofia Isabel", program: "HUMSS", year: "11", section: "11 - HUMSS" },
+    { id: 11, username: "miguel", password: "stud123", role: "student", name: "Garcia, Miguel Angelo", program: "HUMSS", year: "11", section: "11 - HUMSS" },
+    { id: 12, username: "bea", password: "stud123", role: "student", name: "Torres, Bea Nicole", program: "HUMSS", year: "11", section: "11 - HUMSS" },
+    { id: 13, username: "carlo", password: "stud123", role: "student", name: "Villanueva, Carlo James", program: "TVL", year: "11", section: "11 - TVL" },
+    { id: 14, username: "hannah", password: "stud123", role: "student", name: "Aquino, Hannah Grace", program: "TVL", year: "11", section: "11 - TVL" },
+    { id: 15, username: "joshua", password: "stud123", role: "student", name: "Navarro, Joshua Miguel", program: "TVL", year: "11", section: "11 - TVL" },
+    { id: 16, username: "trisha", password: "stud123", role: "student", name: "Ramos, Trisha Mae", program: "TVL", year: "11", section: "11 - TVL" },
+    { id: 17, username: "rafael", password: "stud123", role: "student", name: "Castillo, Rafael Andrei", program: "TVL", year: "11", section: "11 - TVL" }
+  ];
+  //Classes
+  var classes = [
+    { id: 1, code: "PROG", title: "Computer Programming", units: 1, schedule: "M (07:00 AM - 10:00 AM) - Lec", lab: 0, teacherId: 2, section: "11 - GAS", items: { q1: { ww1: 20, ww2: 25, ww3: 20, ww4: 20, pt1: 15, pt2: 15, pt3: 25, pt4: 20, qa1: 50, qa2: 50, qa3: 50 }, q2: { ww1: 20, ww2: 25, ww3: 20, ww4: 20, pt1: 15, pt2: 15, pt3: 25, pt4: 20, qa1: 50, qa2: 50, qa3: 50 } } },
+    { id: 2, code: "PROG", title: "Computer Programming", units: 1, schedule: "W (07:00 AM - 10:00 AM) - Lec", lab: 0, teacherId: 2, section: "11 - HUMSS", items: { q1: { ww1: 20, ww2: 25, ww3: 20, ww4: 20, pt1: 15, pt2: 15, pt3: 25, pt4: 20, qa1: 50, qa2: 50, qa3: 50 }, q2: { ww1: 20, ww2: 25, ww3: 20, ww4: 20, pt1: 15, pt2: 15, pt3: 25, pt4: 20, qa1: 50, qa2: 50, qa3: 50 } } },
+    { id: 3, code: "PROG", title: "Computer Programming", units: 1, schedule: "F (07:00 AM - 10:00 AM) - Lec", lab: 0, teacherId: 2, section: "11 - TVL", items: { q1: { ww1: 20, ww2: 25, ww3: 20, ww4: 20, pt1: 15, pt2: 15, pt3: 25, pt4: 20, qa1: 50, qa2: 50, qa3: 50 }, q2: { ww1: 20, ww2: 25, ww3: 20, ww4: 20, pt1: 15, pt2: 15, pt3: 25, pt4: 20, qa1: 50, qa2: 50, qa3: 50 } } }
+  ];
+  //Grades
+  var grades = [
+    { studentId: 3, classId: 1, q1: { ww1: 16, ww2: 22, ww3: 16, ww4: 17, pt1: 13, pt2: 12, pt3: 22, pt4: 16, qa1: 43, qa2: 41, qa3: 41 }, q2: { ww1: 17, ww2: 22, ww3: 16, ww4: 17, pt1: 13, pt2: 14, pt3: 22, pt4: 17, qa1: 46, qa2: 41, qa3: 45 } },
+    { studentId: 4, classId: 1, q1: { ww1: 16, ww2: 20, ww3: 17, ww4: 18, pt1: 12, pt2: 13, pt3: 22, pt4: 17, qa1: 43, qa2: 40, qa3: 40 }, q2: { ww1: 16, ww2: 22, ww3: 17, ww4: 17, pt1: 13, pt2: 13, pt3: 21, pt4: 18, qa1: 44, qa2: 41, qa3: 43 } },
+    { studentId: 5, classId: 1, q1: { ww1: 13, ww2: 16, ww3: 11, ww4: 13, pt1: 8, pt2: 9, pt3: 16, pt4: 11, qa1: 30, qa2: 27, qa3: 31 }, q2: { ww1: 12, ww2: 15, ww3: 13, ww4: 11, pt1: 9, pt2: 9, pt3: 15, pt4: 12, qa1: 32, qa2: 32, qa3: 30 } },
+    { studentId: 6, classId: 1, q1: { ww1: 17, ww2: 23, ww3: 18, ww4: 19, pt1: 14, pt2: 13, pt3: 22, pt4: 19, qa1: 43, qa2: 45, qa3: 44 }, q2: { ww1: 17, ww2: 21, ww3: 19, ww4: 17, pt1: 13, pt2: 13, pt3: 24, pt4: 17, qa1: 45, qa2: 46, qa3: 48 } },
+    { studentId: 7, classId: 1, q1: { ww1: 19, ww2: 23, ww3: 18, ww4: 18, pt1: 15, pt2: 15, pt3: 22, pt4: 18, qa1: 45, qa2: 45, qa3: 46 }, q2: { ww1: 19, ww2: 23, ww3: 18, ww4: 18, pt1: 14, pt2: 14, pt3: 24, pt4: 19, qa1: 47, qa2: 47, qa3: 47 } },
+    { studentId: 8, classId: 2, q1: { ww1: 17, ww2: 21, ww3: 17, ww4: 17, pt1: 12, pt2: 12, pt3: 19, pt4: 17, qa1: 39, qa2: 39, qa3: 40 }, q2: { ww1: 16, ww2: 20, ww3: 15, ww4: 15, pt1: 12, pt2: 12, pt3: 20, pt4: 15, qa1: 43, qa2: 42, qa3: 39 } },
+    { studentId: 9, classId: 2, q1: { ww1: 17, ww2: 21, ww3: 16, ww4: 18, pt1: 14, pt2: 13, pt3: 21, pt4: 16, qa1: 40, qa2: 42, qa3: 41 }, q2: { ww1: 18, ww2: 20, ww3: 16, ww4: 18, pt1: 13, pt2: 12, pt3: 21, pt4: 16, qa1: 43, qa2: 45, qa3: 45 } },
+    { studentId: 10, classId: 2, q1: { ww1: 18, ww2: 22, ww3: 18, ww4: 19, pt1: 14, pt2: 14, pt3: 22, pt4: 18, qa1: 47, qa2: 48, qa3: 48 }, q2: { ww1: 19, ww2: 24, ww3: 19, ww4: 18, pt1: 14, pt2: 13, pt3: 22, pt4: 17, qa1: 44, qa2: 44, qa3: 47 } },
+    { studentId: 11, classId: 2, q1: { ww1: 19, ww2: 25, ww3: 20, ww4: 20, pt1: 14, pt2: 14, pt3: 23, pt4: 18, qa1: 46, qa2: 48, qa3: 50 }, q2: { ww1: 20, ww2: 24, ww3: 19, ww4: 20, pt1: 14, pt2: 14, pt3: 25, pt4: 20, qa1: 49, qa2: 47, qa3: 46 } },
+    { studentId: 12, classId: 2, q1: { ww1: 18, ww2: 24, ww3: 20, ww4: 18, pt1: 14, pt2: 15, pt3: 24, pt4: 18, qa1: 44, qa2: 44, qa3: 49 }, q2: { ww1: 19, ww2: 22, ww3: 19, ww4: 20, pt1: 14, pt2: 14, pt3: 23, pt4: 18, qa1: 44, qa2: 49, qa3: 47 } },
+    { studentId: 13, classId: 3, q1: { ww1: 19, ww2: 22, ww3: 19, ww4: 18, pt1: 13, pt2: 13, pt3: 22, pt4: 17, qa1: 45, qa2: 43, qa3: 44 }, q2: { ww1: 17, ww2: 23, ww3: 17, ww4: 18, pt1: 13, pt2: 14, pt3: 22, pt4: 19, qa1: 44, qa2: 45, qa3: 45 } },
+    { studentId: 14, classId: 3, q1: { ww1: 16, ww2: 20, ww3: 15, ww4: 17, pt1: 12, pt2: 12, pt3: 21, pt4: 16, qa1: 40, qa2: 41, qa3: 41 }, q2: { ww1: 17, ww2: 19, ww3: 16, ww4: 16, pt1: 12, pt2: 13, pt3: 20, pt4: 16, qa1: 42, qa2: 43, qa3: 41 } },
+    { studentId: 15, classId: 3, q1: { ww1: 18, ww2: 23, ww3: 18, ww4: 18, pt1: 14, pt2: 13, pt3: 24, pt4: 18, qa1: 47, qa2: 47, qa3: 44 }, q2: { ww1: 18, ww2: 24, ww3: 19, ww4: 17, pt1: 13, pt2: 13, pt3: 21, pt4: 17, qa1: 43, qa2: 46, qa3: 47 } },
+    { studentId: 16, classId: 3, q1: { ww1: 18, ww2: 24, ww3: 19, ww4: 18, pt1: 15, pt2: 15, pt3: 23, pt4: 20, qa1: 46, qa2: 47, qa3: 50 }, q2: { ww1: 20, ww2: 23, ww3: 19, ww4: 19, pt1: 14, pt2: 14, pt3: 23, pt4: 19, qa1: 44, qa2: 47, qa3: 47 } },
+    { studentId: 17, classId: 3, q1: { ww1: 16, ww2: 21, ww3: 16, ww4: 15, pt1: 13, pt2: 13, pt3: 22, pt4: 15, qa1: 40, qa2: 38, qa3: 42 }, q2: { ww1: 16, ww2: 19, ww3: 16, ww4: 17, pt1: 13, pt2: 12, pt3: 19, pt4: 17, qa1: 41, qa2: 42, qa3: 39 } }
+  ];
+
+
+  
